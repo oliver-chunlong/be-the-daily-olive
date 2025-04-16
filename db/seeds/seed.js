@@ -1,13 +1,18 @@
 const db = require("../connection");
 const format = require("pg-format");
+const { convertTimestampToDate, getArticleID } = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db
-    .query(`DROP TABLE IF EXISTS topics, users, articles, comments CASCADE`)
+    .query(`DROP TABLE IF EXISTS comments`)
     .then(() => {
-      return db.query(
-        `CREATE TABLE topics(slug VARCHAR(50) PRIMARY KEY, description VARCHAR(250), img_url VARCHAR(1000))`
-      );
+      return db.query(`DROP TABLE IF EXISTS articles`);
+    })
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS topics`);
+    })
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS users`);
     })
     .then(() => {
       return db.query(
@@ -16,7 +21,12 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(() => {
       return db.query(
-        `CREATE TABLE articles(article_id SERIAL PRIMARY KEY, title VARCHAR(250), topic VARCHAR(50) REFERENCES topics(slug), author VARCHAR(50) REFERENCES users(username), body TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, votes INT DEFAULT 0, article_img_url VARCHAR(1000))`
+        `CREATE TABLE topics(slug VARCHAR(100) PRIMARY KEY, description VARCHAR(250), img_url VARCHAR(1000))`
+      );
+    })
+    .then(() => {
+      return db.query(
+        `CREATE TABLE articles(article_id SERIAL PRIMARY KEY, title VARCHAR(250), topic VARCHAR(100) REFERENCES topics(slug), author VARCHAR(50) REFERENCES users(username), body TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, votes INT DEFAULT 0, article_img_url VARCHAR(1000))`
       );
     })
     .then(() => {
@@ -26,7 +36,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(() => {
       const formattedTopics = topicData.map((topic) => {
-        return [topic.description, topic.slug, topic.img_url];
+        return [topic.slug, topic.description, topic.img_url];
       });
       const insertTopicsQuery = format(
         `INSERT INTO topics(slug, description, img_url) VALUES %L`,
@@ -46,22 +56,41 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(() => {
       const formattedArticles = articleData.map((article) => {
+        const convertedArticles = convertTimestampToDate(article);
         return [
-          article.article_id,
-          article.title,
-          article.topic,
-          article.author,
-          article.body,
-          article.created_at,
-          article.votes,
-          article.article_img_url,
+          convertedArticles.title,
+          convertedArticles.topic,
+          convertedArticles.author,
+          convertedArticles.body,
+          convertedArticles.created_at,
+          convertedArticles.votes,
+          convertedArticles.article_img_url,
         ];
       });
       const insertArticlesQuery = format(
-        `INSERT INTO articles(article_id, title, topic, author, body, created_at, votes, article_img_url) VALUES %L`,
+        `INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *`,
         formattedArticles
       );
       return db.query(insertArticlesQuery);
+    })
+    .then((result) => {
+      const articleID = getArticleID(result.rows);
+      const formattedComments = commentData.map((comment) => {
+        const convertedComment = convertTimestampToDate(comment);
+        return [
+          articleID[comment.article_title],
+          convertedComment.body,
+          convertedComment.votes,
+          convertedComment.author,
+          convertedComment.created_at,
+        ];
+      });
+      // console.log(formattedComments)
+      const insertCommentsQuery = format(
+        `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L`,
+        formattedComments
+      );
+      return db.query(insertCommentsQuery);
     });
 };
 
