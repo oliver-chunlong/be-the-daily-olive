@@ -91,6 +91,27 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         formattedComments
       );
       return db.query(insertCommentsQuery);
+    })
+    .then(() => {
+      console.log("Seeding complete!");
+    })
+    .then(() => {
+      return db.query(`SELECT username from users`);
+    })
+    .then((allUsernames) => {
+      const onlyUsernames = allUsernames.rows.map(
+        (username) => username.username
+      );
+      console.log(onlyUsernames);
+    })
+    .then(() => {
+      return db.query(`SELECT body FROM comments WHERE votes < 0`);
+    })
+    .then((commentsUnderZeroVotes) => {
+      const onlyComments = commentsUnderZeroVotes.rows.map(
+        (comment) => comment.body
+      );
+      console.log(onlyComments);
     });
 };
 

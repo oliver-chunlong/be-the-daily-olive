@@ -609,10 +609,40 @@ describe("data insertion", () => {
         expect(comment).toHaveProperty("comment_id");
         expect(comment).toHaveProperty("body");
         expect(comment).toHaveProperty("article_id");
+        expect(typeof comment.article_id).toBe("number");
         expect(comment).toHaveProperty("author");
         expect(comment).toHaveProperty("votes");
         expect(comment).toHaveProperty("created_at");
       });
     });
+  });
+});
+
+describe("additional queries", () => {
+  test("should return only the usernames from the users table", () => {
+    return db.query(`SELECT username FROM users`).then((result) => {
+      const obtainedUsernames = result.rows.map((user) => user.username);
+      const expectedUsernames = [
+        "butter_bridge",
+        "icellusedkars",
+        "rogersop",
+        "lurker",
+      ];
+
+      expect(obtainedUsernames).toEqual(expectedUsernames);
+    });
+  });
+
+  test("should return only comments where the votes are less than zero", () => {
+    return db
+      .query(`SELECT body FROM comments WHERE votes < 0`)
+      .then((result) => {
+        const obtainedComments = result.rows.map((comment) => comment.body);
+        const expectedComments = [
+          " I carry a log — yes. Is it funny to you? It is not to me.",
+        ];
+
+        expect(obtainedComments).toEqual(expectedComments);
+      });
   });
 });
