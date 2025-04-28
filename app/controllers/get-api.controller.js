@@ -1,9 +1,9 @@
 const db = require("../../db/connection");
-const endpointsJson = require("../../endpoints.json");
+const endpoints = require("../../endpoints.json");
 const { selectApiTopics } = require("../models/get-api.model");
 
 exports.getApi = (req, res) => {
-  res.status(200).send({ endpoints: endpointsJson });
+  res.status(200).send({ endpoints });
 };
 
 exports.getApiTopics = (req, res,) => {
