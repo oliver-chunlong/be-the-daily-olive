@@ -17,27 +17,43 @@ afterAll(() => {
   return db.end();
 });
 
-describe("GET /api", () => {
-  test("200: Responds with an object detailing the documentation for each endpoint", () => {
-    return request(app)
-      .get("/api")
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toEqual(endpointsJson)
-      });
-  });
-});
-
-
-
 // describe("GET /api", () => {
 //   test("200: Responds with an object detailing the documentation for each endpoint", () => {
 //     return request(app)
 //       .get("/api")
 //       .expect(200)
-//       .then(({ body: { endpoints } }) => {
-//         console.log(endpoints)
-//         expect(endpoints).toEqual(endpointsJson);
+//       .then((response) => {
+//         expect(response.body).toEqual(endpointsJson);
 //       });
 //   });
 // });
+
+describe("GET /api", () => {
+  test("200: Responds with an object detailing the documentation for each endpoint", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body: { endpoints } }) => {
+        console.log(endpoints)
+        expect(endpoints).toEqual(endpointsJson);
+      });
+  });
+});
+
+describe("GET /api/topics", () => {
+  test("200: Responds with an array of topic objects, each of which should have slug and description", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.topics).toHaveLength(3);
+        body.topics.forEach((topic) => {
+          expect(topic).toMatchObject({
+            description: expect.any(String),
+            slug: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
