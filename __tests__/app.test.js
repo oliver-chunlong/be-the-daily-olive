@@ -51,7 +51,16 @@ describe.only("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles[0].article_id).toBe(1);
+        const theArticle = body.articles[0];
+
+        expect(typeof theArticle.author).toBe("string"),
+          expect(typeof theArticle.title).toBe("string"),
+          expect(theArticle.article_id).toBe(1),
+          expect(typeof theArticle.body).toBe("string"),
+          expect(typeof theArticle.topic).toBe("string"),
+          expect(typeof theArticle.created_at).toBe("string"),
+          expect(typeof theArticle.votes).toBe("number"),
+          expect(typeof theArticle.article_img_url).toBe("string");
       });
   });
 
