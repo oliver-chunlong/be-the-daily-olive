@@ -4,13 +4,16 @@ const express = require("express");
 const app = express();
 const {
   getApi,
-  getApiTopics,
+  getTopics,
+  getArticleById,
 } = require("./app/controllers/get-api.controller");
 
 app.use(express.json());
 
 app.get("/api", getApi);
 
-app.get("/api/topics", getApiTopics);
+app.get("/api/topics", getTopics);
+
+app.get("/api/articles/:article_id", getArticleById)
 
 module.exports = app;
