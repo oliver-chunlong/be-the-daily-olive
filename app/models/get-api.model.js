@@ -1,5 +1,7 @@
-const db = require("../../db/connection")
+const db = require("../../db/connection");
 
-// exports.selectApi = () => {
-    
-// }
+exports.selectApiTopics = () => {
+  return db.query(`SELECT * FROM topics`).then(({ rows }) => {
+    return rows;
+  });
+};
