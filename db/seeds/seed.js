@@ -92,9 +92,9 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       );
       return db.query(insertCommentsQuery);
     })
-    .then(() => {
-      console.log("Seeding complete!");
-    })
+    // .then(() => {
+    //   console.log("Seeding complete!");
+    // })
     .then(() => {
       return db.query(`SELECT username from users`);
     })
@@ -102,7 +102,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       const onlyUsernames = allUsernames.rows.map(
         (username) => username.username
       );
-      console.log(onlyUsernames);
+      // console.log(onlyUsernames);
     })
     .then(() => {
       return db.query(`SELECT body FROM comments WHERE votes < 0`);
@@ -111,7 +111,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       const onlyComments = commentsUnderZeroVotes.rows.map(
         (comment) => comment.body
       );
-      console.log(onlyComments);
+      // console.log(onlyComments);
     });
 };
 
