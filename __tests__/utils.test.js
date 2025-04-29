@@ -6,13 +6,15 @@ describe("convertTimestampToDate", () => {
     const input = { created_at: timestamp };
     const result = convertTimestampToDate(input);
     expect(result).not.toBe(input);
-    expect(result).toBeObject();
+    // expect(result).toBeObject();
+    expect(typeof result).toBe("object");
   });
   test("converts a created_at property to a date", () => {
     const timestamp = 1557572706232;
     const input = { created_at: timestamp };
     const result = convertTimestampToDate(input);
-    expect(result.created_at).toBeDate();
+    // expect(result.created_at).toBeDate();
+    expect(result.created_at instanceof Date).toBe(true);
     expect(result.created_at).toEqual(new Date(timestamp));
   });
   test("does not mutate the input", () => {
@@ -44,42 +46,52 @@ describe("getArticleID", () => {
   });
 
   test("should return an object of the title and article_id as key and value, if given an array with one object", () => {
-    const input = [{
-      article_id: 1,
-      title: 'Living in the shadow of a great man',
-      topic: 'mitch',
-      author: 'butter_bridge',
-      body: 'I find this existence challenging',
-      created_at: '2020-07-09T20:11:00.000Z',
-      votes: 100,
-      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
-    }];
+    const input = [
+      {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: "2020-07-09T20:11:00.000Z",
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+    ];
     const result = getArticleID(input);
-    expect(result).toEqual({'Living in the shadow of a great man': 1});
+    expect(result).toEqual({ "Living in the shadow of a great man": 1 });
   });
 
   test("should return an object of multiple properties, with title and article_id as key and value, if given an array with multiple objects", () => {
-    const input = [{
-      article_id: 5,
-      title: 'UNCOVERED: catspiracy to bring down democracy',
-      topic: 'cats',
-      author: 'rogersop',
-      body: 'Bastet walks amongst us, and the cats are taking arms!',
-      created_at: '2020-08-03T13:14:00.000Z',
-      votes: 0,
-      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
-    },
-    {
-      article_id: 6,
-      title: 'A',
-      topic: 'mitch',
-      author: 'icellusedkars',
-      body: 'Delicious tin of cat food',
-      created_at: '2020-10-18T01:00:00.000Z',
-      votes: 0,
-      article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
-    }]
-    const result = getArticleID(input)
-    expect(result).toEqual({'UNCOVERED: catspiracy to bring down democracy': 5, 'A': 6})
-  })
+    const input = [
+      {
+        article_id: 5,
+        title: "UNCOVERED: catspiracy to bring down democracy",
+        topic: "cats",
+        author: "rogersop",
+        body: "Bastet walks amongst us, and the cats are taking arms!",
+        created_at: "2020-08-03T13:14:00.000Z",
+        votes: 0,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+      {
+        article_id: 6,
+        title: "A",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "Delicious tin of cat food",
+        created_at: "2020-10-18T01:00:00.000Z",
+        votes: 0,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      },
+    ];
+    const result = getArticleID(input);
+    expect(result).toEqual({
+      "UNCOVERED: catspiracy to bring down democracy": 5,
+      A: 6,
+    });
+  });
 });

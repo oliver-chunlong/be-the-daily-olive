@@ -3,6 +3,7 @@ const endpoints = require("../../endpoints.json");
 const {
   selectTopics,
   selectArticleById,
+  fetchArticles,
 } = require("../models/get-api.model");
 
 exports.getApi = (req, res) => {
@@ -33,5 +34,15 @@ exports.getArticleById = (req, res) => {
       } else {
         return res.status(500).send({ msg: "Internal Server Error" });
       }
+    });
+};
+
+exports.getArticles = (req, res) => {
+  fetchArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(() => {
+      return res.status(500).send({ msg: "Internal Server Error" });
     });
 };
