@@ -7,6 +7,7 @@ const {
   fetchCommsByArtId,
   insertCommByArtId,
   updateArtById,
+  removeCommById,
 } = require("../models/get-api.model");
 
 exports.getApi = (req, res) => {
@@ -66,6 +67,16 @@ exports.patchArtById = (req, res, next) => {
   updateArtById(article_id, inc_votes)
     .then((article) => {
       return res.status(201).send({ article });
+    })
+    .catch(next);
+};
+
+exports.deleteCommById = (req, res, next) => {
+  const { comment_id } = req.params;
+
+  removeCommById(comment_id)
+    .then(() => {
+      return res.status(204).send();
     })
     .catch(next);
 };
