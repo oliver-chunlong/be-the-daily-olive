@@ -51,7 +51,6 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         const theArticle = body.articles;
 
         expect(typeof theArticle.author).toBe("string"),
@@ -92,6 +91,7 @@ describe("GET /api/articles", () => {
       .then(({ body }) => {
         const allArticles = body.articles;
         expect(allArticles.length).toBeGreaterThan(0);
+        expect(allArticles).toBeSorted("created_at", { descending: true });
         allArticles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -108,14 +108,13 @@ describe("GET /api/articles", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id/comments", () => {
+describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an array of comments for the given article_id with all the necessary properties, served in the order of recency", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
         const allComments = body.comments;
-        console.log(allComments)
         expect(allComments.length).toBeGreaterThan(0);
         allComments.forEach((comment) => {
           expect(comment).toMatchObject({
@@ -142,6 +141,72 @@ describe.only("GET /api/articles/:article_id/comments", () => {
   test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
       .get("/api/articles/100/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Page Not Found");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Responds with the posted comment", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Best article ever!",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          article_id: 1,
+          author: "butter_bridge",
+          body: "Best article ever!",
+        });
+      });
+  });
+
+  test("400: Responds with a Bad Request message if required fields are empty", () => {
+    const newComment = {
+      username: "",
+      body: "Best article ever!",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Required fields empty");
+      });
+  });
+
+  test("400: Responds with a Bad Request message when the endpoint is invalid", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Best article ever!",
+    };
+
+    return request(app)
+      .post("/api/articles/pepper/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Best article ever!",
+    };
+
+    return request(app)
+      .post("/api/articles/100/comments")
+      .send(newComment)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page Not Found");
