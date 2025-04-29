@@ -45,7 +45,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200: Responds with an article object as defined by its ID, along with all the correct properties", () => {
     return request(app)
       .get("/api/articles/1")
@@ -79,6 +79,30 @@ describe.only("GET /api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page Not Found");
+      });
+  });
+});
+
+describe.only("GET /api/articles", () => {
+  test("200: Responds with an articles array of article objects, each containing all the necessary properties except body and sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const allArticles = body.articles;
+        expect(allArticles.length).toBeGreaterThan(0);
+        allArticles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
       });
   });
 });
