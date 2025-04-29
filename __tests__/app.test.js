@@ -210,7 +210,7 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
-describe.only("PATCH /api/articles/:article_id", () => {
+describe("PATCH /api/articles/:article_id", () => {
   test("201: Responds with the updated article if the given inc_votes is positive", () => {
     const votesToAdd = { inc_votes: 1 };
 
@@ -220,6 +220,17 @@ describe.only("PATCH /api/articles/:article_id", () => {
       .expect(201)
       .then(({ body }) => {
         expect(body.article.votes).toBe(101);
+      });
+  });
+
+  test("201: Responds with the updated article if the given inc_votes is negative", () => {
+    const votesToAdd = { inc_votes: -1 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(votesToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(99);
       });
   });
 
