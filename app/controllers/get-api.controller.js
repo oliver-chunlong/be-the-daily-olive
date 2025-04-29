@@ -5,6 +5,7 @@ const {
   selectArticleById,
   fetchArticles,
   fetchCommsByArtId,
+  insertCommByArtId,
 } = require("../models/get-api.model");
 
 exports.getApi = (req, res) => {
@@ -42,6 +43,17 @@ exports.getCommsByArtId = (req, res, next) => {
   fetchCommsByArtId(article_id)
     .then((comments) => {
       return res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.postCommByArtId = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+
+  insertCommByArtId(article_id, username, body)
+    .then((comment) => {
+      return res.status(201).send({ comment });
     })
     .catch(next);
 };

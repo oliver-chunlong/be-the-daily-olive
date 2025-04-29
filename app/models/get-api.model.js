@@ -37,3 +37,25 @@ exports.fetchCommsByArtId = (article_id) => {
       return rows;
     });
 };
+
+exports.insertCommByArtId = (article_id, username, body) => {
+  if (username === "" || body === "") {
+    return Promise.reject({ status: 400, msg: "Required fields empty" });
+  }
+
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Page Not Found" });
+      }
+      return db
+        .query(
+          `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
+          [article_id, username, body]
+        )
+        .then(({ rows }) => {
+          return rows[0];
+        });
+    });
+};

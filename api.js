@@ -8,6 +8,7 @@ const {
   getArticleById,
   getArticles,
   getCommsByArtId,
+  postCommByArtId
 } = require("./app/controllers/get-api.controller");
 
 app.use(express.json());
@@ -21,6 +22,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id/comments", getCommsByArtId);
+
+app.post("/api/articles/:article_id/comments", postCommByArtId)
 
 // Custom error handler
 app.use((err, req, res, next) => {
