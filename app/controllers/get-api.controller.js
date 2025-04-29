@@ -4,45 +4,44 @@ const {
   selectTopics,
   selectArticleById,
   fetchArticles,
+  fetchCommsByArtId,
 } = require("../models/get-api.model");
 
 exports.getApi = (req, res) => {
   res.status(200).send({ endpoints });
 };
 
-exports.getTopics = (req, res) => {
+exports.getTopics = (req, res, next) => {
   selectTopics()
     .then((topics) => {
       res.status(200).send({ topics });
     })
-    .catch(() => {
-      return res.status(500).send({ msg: "Internal Server Error" });
-    });
+    .catch(next);
 };
 
-exports.getArticleById = (req, res) => {
+exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   selectArticleById(article_id)
     .then((articles) => {
       return res.status(200).send({ articles });
     })
-    .catch((err) => {
-      if (err.code === "22P02") {
-        return res.status(400).send({ msg: "Bad Request" });
-      } else if (err.status && err.msg) {
-        return res.status(err.status).send({ msg: err.msg });
-      } else {
-        return res.status(500).send({ msg: "Internal Server Error" });
-      }
-    });
+    .catch(next);
 };
 
-exports.getArticles = (req, res) => {
+exports.getArticles = (req, res, next) => {
   fetchArticles()
     .then((articles) => {
       res.status(200).send({ articles });
     })
-    .catch(() => {
-      return res.status(500).send({ msg: "Internal Server Error" });
-    });
+    .catch(next);
+};
+
+exports.getCommsByArtId = (req, res, next) => {
+  const { article_id } = req.params;
+
+  fetchCommsByArtId(article_id)
+    .then((comments) => {
+      return res.status(200).send({ comments });
+    })
+    .catch(next);
 };
