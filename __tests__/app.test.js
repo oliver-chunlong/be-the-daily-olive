@@ -5,10 +5,6 @@ const data = require("../db/data/test-data/index");
 const request = require("supertest");
 const app = require("../api");
 
-/* Set up your test imports here */
-
-/* Set up your beforeEach & afterAll functions here */
-
 beforeEach(() => {
   return seed(data);
 });
@@ -214,8 +210,8 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("PATCH /api/articles/:article_id", () => {
-  test("201: Responds with the updated Article", () => {
+describe.only("PATCH /api/articles/:article_id", () => {
+  test("201: Responds with the updated article if the given inc_votes is positive", () => {
     const votesToAdd = { inc_votes: 1 };
 
     return request(app)
@@ -224,6 +220,18 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(201)
       .then(({ body }) => {
         expect(body.article.votes).toBe(101);
+      });
+  });
+
+  test("201: Responds with the updated article if the given inc_votes is negative", () => {
+    const votesToAdd = { inc_votes: -1 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(votesToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(99);
       });
   });
 
