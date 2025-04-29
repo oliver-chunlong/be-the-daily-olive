@@ -5,10 +5,6 @@ const data = require("../db/data/test-data/index");
 const request = require("supertest");
 const app = require("../api");
 
-/* Set up your test imports here */
-
-/* Set up your beforeEach & afterAll functions here */
-
 beforeEach(() => {
   return seed(data);
 });
@@ -257,6 +253,35 @@ describe("PATCH /api/articles/:article_id", () => {
     return request(app)
       .patch("/api/articles/100")
       .send(votesToAdd)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Page Not Found");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Responds with no content after successful deletion", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((res) => {
+        expect(res.text).toBe("")
+      });
+  });
+
+  test("400: Responds with a Bad Request message when the endpoint is invalid", () => {
+    return request(app)
+      .delete("/api/comments/chilli")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
+    return request(app)
+      .delete("/api/comments/100")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page Not Found");
