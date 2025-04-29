@@ -211,7 +211,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 });
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("201: Responds with the updated Article", () => {
+  test("201: Responds with the updated article if the given inc_votes is positive", () => {
     const votesToAdd = { inc_votes: 1 };
 
     return request(app)
@@ -220,6 +220,29 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(201)
       .then(({ body }) => {
         expect(body.article.votes).toBe(101);
+      });
+  });
+
+  test("201: Responds with the updated article if the given inc_votes is negative", () => {
+    const votesToAdd = { inc_votes: -1 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(votesToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(99);
+      });
+  });
+
+  test("201: Responds with the updated article if the given inc_votes is negative", () => {
+    const votesToAdd = { inc_votes: -1 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(votesToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(99);
       });
   });
 
@@ -269,7 +292,6 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(res.text).toBe("")
       });
   });
-
   test("400: Responds with a Bad Request message when the endpoint is invalid", () => {
     return request(app)
       .delete("/api/comments/chilli")
@@ -278,7 +300,6 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-
   test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
       .delete("/api/comments/100")
