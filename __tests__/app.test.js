@@ -213,3 +213,53 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("201: Responds with the updated Article", () => {
+    const votesToAdd = { inc_votes: 1 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(votesToAdd)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(101);
+      });
+  });
+
+  test("400: Responds with an Invalid Data Type message if the vote is not a number", () => {
+    const votesToAdd = { inc_votes: "basil" };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(votesToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Data Type");
+      });
+  });
+
+  test("400: Responds with a Bad Request message when the endpoint is invalid", () => {
+    const votesToAdd = { inc_votes: 1 };
+
+    return request(app)
+      .patch("/api/articles/cumin")
+      .send(votesToAdd)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
+    const votesToAdd = { inc_votes: 1 };
+
+    return request(app)
+      .patch("/api/articles/100")
+      .send(votesToAdd)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Page Not Found");
+      });
+  });
+});
