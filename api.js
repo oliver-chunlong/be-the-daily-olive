@@ -6,7 +6,8 @@ const {
   getApi,
   getTopics,
   getArticleById,
-  getArticles
+  getArticles,
+  getCommsByArtId,
 } = require("./app/controllers/get-api.controller");
 
 app.use(express.json());
@@ -15,8 +16,33 @@ app.get("/api", getApi);
 
 app.get("/api/topics", getTopics);
 
-app.get("/api/articles/:article_id", getArticleById)
+app.get("/api/articles/:article_id", getArticleById);
 
-app.get("/api/articles", getArticles)
+app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getCommsByArtId);
+
+// Custom error handler
+app.use((err, req, res, next) => {
+  if (err.code === "22P02") {
+    return res.status(400).send({ msg: "Bad Request" });
+  } else {
+    next(err);
+  }
+});
+
+// PSQL error handler
+app.use((err, req, res, next) => {
+  if (err.status && err.msg) {
+    return res.status(err.status).send({ msg: err.msg });
+  } else {
+    next(err);
+  }
+});
+
+// Server error handler
+app.use((err, req, res, next) => {
+  return res.status(500).send({ msg: "Internal Server Error" });
+});
 
 module.exports = app;

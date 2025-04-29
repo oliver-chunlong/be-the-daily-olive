@@ -51,7 +51,8 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        const theArticle = body.articles[0];
+        console.log(body);
+        const theArticle = body.articles;
 
         expect(typeof theArticle.author).toBe("string"),
           expect(typeof theArticle.title).toBe("string"),
@@ -83,7 +84,7 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-describe.only("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   test("200: Responds with an articles array of article objects, each containing all the necessary properties except body and sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles")
@@ -103,6 +104,47 @@ describe.only("GET /api/articles", () => {
             comment_count: expect.any(Number),
           });
         });
+      });
+  });
+});
+
+describe.only("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of comments for the given article_id with all the necessary properties, served in the order of recency", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const allComments = body.comments;
+        console.log(allComments)
+        expect(allComments.length).toBeGreaterThan(0);
+        allComments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+
+  test("400: Responds with a Bad Request message when the endpoint is invalid", () => {
+    return request(app)
+      .get("/api/articles/ginger/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
+    return request(app)
+      .get("/api/articles/100/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Page Not Found");
       });
   });
 });
