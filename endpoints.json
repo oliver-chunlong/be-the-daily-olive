@@ -84,8 +84,18 @@
   },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes the comment with the specified comment_id and serves a 204 status code with no content",
-    "examplesResponse": {
+    "exampleResponse": {
       "status": 204
     }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "exampleReponse": [
+      {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    ]
   }
 }

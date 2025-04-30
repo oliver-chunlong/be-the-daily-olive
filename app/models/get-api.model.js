@@ -1,6 +1,6 @@
 const db = require("../../db/connection");
 
-exports.selectTopics = () => {
+exports.fetchTopics = () => {
   return db.query(`SELECT * FROM topics`).then(({ rows }) => {
     return rows;
   });
@@ -100,4 +100,10 @@ exports.removeCommById = (comment_id) => {
           return rows;
         });
     });
+};
+
+exports.fetchUsers = () => {
+  return db.query(`SELECT * FROM users`).then(({ rows }) => {
+    return rows;
+  });
 };

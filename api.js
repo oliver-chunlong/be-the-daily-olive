@@ -11,6 +11,7 @@ const {
   postCommByArtId,
   patchArtById,
   deleteCommById,
+  getUsers,
 } = require("./app/controllers/get-api.controller");
 
 app.use(express.json());
@@ -30,6 +31,8 @@ app.post("/api/articles/:article_id/comments", postCommByArtId);
 app.patch("/api/articles/:article_id", patchArtById);
 
 app.delete("/api/comments/:comment_id", deleteCommById)
+
+app.get("/api/users", getUsers)
 
 // Custom error handler
 app.use((err, req, res, next) => {
