@@ -7,10 +7,10 @@ const {
   getTopics,
   getArticleById,
   getArticles,
-  getCommsByArtId,
-  postCommByArtId,
-  patchArtById,
-  deleteCommById,
+  getCommentsByArticleId,
+  postCommentByArticleId,
+  patchArticleById,
+  deleteCommentById,
   getUsers,
 } = require("./app/controllers/get-api.controller");
 
@@ -24,17 +24,16 @@ app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getArticles);
 
-app.get("/api/articles/:article_id/comments", getCommsByArtId);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
-app.post("/api/articles/:article_id/comments", postCommByArtId);
+app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
-app.patch("/api/articles/:article_id", patchArtById);
+app.patch("/api/articles/:article_id", patchArticleById);
 
-app.delete("/api/comments/:comment_id", deleteCommById)
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
-app.get("/api/users", getUsers)
+app.get("/api/users", getUsers);
 
-// Custom error handler
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     return res.status(400).send({ msg: "Bad Request" });
@@ -43,7 +42,6 @@ app.use((err, req, res, next) => {
   }
 });
 
-// PSQL error handler
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     return res.status(err.status).send({ msg: err.msg });
@@ -52,7 +50,6 @@ app.use((err, req, res, next) => {
   }
 });
 
-// Server error handler
 app.use((err, req, res, next) => {
   return res.status(500).send({ msg: "Internal Server Error" });
 });

@@ -4,10 +4,10 @@ const {
   fetchTopics,
   selectArticleById,
   fetchArticles,
-  fetchCommsByArtId,
-  insertCommByArtId,
-  updateArtById,
-  removeCommById,
+  fetchCommentsByArticleId,
+  insertCommentByArticleId,
+  updateArticleById,
+  removeCommentById,
   fetchUsers,
 } = require("../models/get-api.model");
 
@@ -33,49 +33,51 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles()
+  const { sort_by, order } = req.query;
+
+  fetchArticles(sort_by, order)
     .then((articles) => {
-      res.status(200).send({ articles });
+      return res.status(200).send({ articles });
     })
     .catch(next);
 };
 
-exports.getCommsByArtId = (req, res, next) => {
+exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
 
-  fetchCommsByArtId(article_id)
+  fetchCommentsByArticleId(article_id)
     .then((comments) => {
       return res.status(200).send({ comments });
     })
     .catch(next);
 };
 
-exports.postCommByArtId = (req, res, next) => {
+exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
 
-  insertCommByArtId(article_id, username, body)
+  insertCommentByArticleId(article_id, username, body)
     .then((comment) => {
       return res.status(201).send({ comment });
     })
     .catch(next);
 };
 
-exports.patchArtById = (req, res, next) => {
+exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
 
-  updateArtById(article_id, inc_votes)
+  updateArticleById(article_id, inc_votes)
     .then((article) => {
       return res.status(200).send({ article });
     })
     .catch(next);
 };
 
-exports.deleteCommById = (req, res, next) => {
+exports.deleteCommentById = (req, res, next) => {
   const { comment_id } = req.params;
 
-  removeCommById(comment_id)
+  removeCommentById(comment_id)
     .then(() => {
       return res.status(204).send();
     })
@@ -83,7 +85,9 @@ exports.deleteCommById = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-  fetchUsers().then((users) => {
-    return res.status(200).send({users})
-  }).catch(next)
-}
+  fetchUsers()
+    .then((users) => {
+      return res.status(200).send({ users });
+    })
+    .catch(next);
+};
