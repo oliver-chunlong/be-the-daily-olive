@@ -17,8 +17,18 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.fetchArticles = (sort_by, order) => {
-  let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id`;
+exports.fetchArticles = (sort_by, order, topic) => {
+  let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+
+  const validTopics = ["mitch", "cats"];
+
+  if (topic && validTopics.includes(topic)) {
+    queryStr += ` WHERE topic = '${topic}' GROUP BY articles.article_id`;
+  } else if (topic && !validTopics.includes(topic)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  } else if (!topic) {
+    queryStr += ` GROUP BY articles.article_id`;
+  }
 
   const greenlist = [
     "article_id",
@@ -35,7 +45,7 @@ exports.fetchArticles = (sort_by, order) => {
   } else if (sort_by && !greenlist.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   } else {
-    (queryStr += ` ORDER BY $1`), [created_at];
+    queryStr += ` ORDER BY created_at`;
   }
 
   const validOrders = ["ASC", "DESC"];
@@ -45,7 +55,7 @@ exports.fetchArticles = (sort_by, order) => {
   } else if (order && !validOrders.includes(order)) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   } else {
-    (queryStr += ` $1`), [DESC];
+    queryStr += ` DESC`;
   }
 
   return db.query(queryStr).then(({ rows }) => {
