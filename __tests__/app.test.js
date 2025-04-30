@@ -274,14 +274,21 @@ describe("PATCH /api/articles/:article_id", () => {
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
-  test("204: Responds with no content after successful deletion", () => {
+  test("204: Responds with no content after successful deletion and checks that the comment is deleted", () => {
     return request(app)
       .delete("/api/comments/1")
       .expect(204)
       .then((res) => {
         expect(res.text).toBe("");
+        return request(app)
+          .delete("/api/comments/1")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Comment Not Found");
+          });
       });
   });
+
   test("400: Responds with a Bad Request message when the endpoint is invalid", () => {
     return request(app)
       .delete("/api/comments/chilli")
@@ -290,6 +297,7 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
+
   test("404: Responds with a Comment Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
       .delete("/api/comments/5757")
