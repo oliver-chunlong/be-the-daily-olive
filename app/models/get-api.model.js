@@ -17,17 +17,43 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.fetchArticles = () => {
-  return db
-    .query(
-      `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.fetchArticles = (sort_by, order) => {
+  let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id`;
+
+  const greenlist = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+  ];
+
+  if (sort_by && greenlist.includes(sort_by)) {
+    queryStr += ` ORDER BY ${sort_by}`;
+  } else if (sort_by && !greenlist.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  } else {
+    (queryStr += ` ORDER BY $1`), [created_at];
+  }
+
+  const validOrders = ["ASC", "DESC"];
+
+  if (order && validOrders.includes(order.toUpperCase())) {
+    queryStr += ` ${order.toUpperCase()}`;
+  } else if (order && !validOrders.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  } else {
+    (queryStr += ` $1`), [DESC];
+  }
+
+  return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
 };
 
-exports.fetchCommsByArtId = (article_id) => {
+exports.fetchCommentsByArticleId = (article_id) => {
   return db
     .query(`SELECT * FROM comments WHERE article_id = $1`, [article_id])
     .then(({ rows }) => {
@@ -38,7 +64,7 @@ exports.fetchCommsByArtId = (article_id) => {
     });
 };
 
-exports.insertCommByArtId = (article_id, username, body) => {
+exports.insertCommentByArticleId = (article_id, username, body) => {
   if (username === "" || body === "") {
     return Promise.reject({ status: 400, msg: "Required fields empty" });
   }
@@ -60,7 +86,7 @@ exports.insertCommByArtId = (article_id, username, body) => {
     });
 };
 
-exports.updateArtById = (article_id, inc_votes) => {
+exports.updateArticleById = (article_id, inc_votes) => {
   if (typeof inc_votes !== "number") {
     return Promise.reject({ status: 400, msg: "Invalid Data Type" });
   }
@@ -85,7 +111,7 @@ exports.updateArtById = (article_id, inc_votes) => {
     });
 };
 
-exports.removeCommById = (comment_id) => {
+exports.removeCommentById = (comment_id) => {
   return db
     .query(`SELECT * FROM comments WHERE comment_id = $1`, [comment_id])
     .then(({ rows }) => {
