@@ -71,7 +71,7 @@ describe("GET /api/articles/:article_id", () => {
 
   test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
-      .get("/api/articles/100")
+      .get("/api/articles/5757")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page Not Found");
@@ -136,7 +136,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 
   test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
-      .get("/api/articles/100/comments")
+      .get("/api/articles/5757/comments")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page Not Found");
@@ -211,37 +211,27 @@ describe("POST /api/articles/:article_id/comments", () => {
 });
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("201: Responds with the updated article if the given inc_votes is positive", () => {
+  test("200: Responds with the updated article if the given inc_votes is positive", () => {
     const votesToAdd = { inc_votes: 1 };
 
     return request(app)
       .patch("/api/articles/1")
       .send(votesToAdd)
-      .expect(201)
+      .expect(200)
       .then(({ body }) => {
+        expect(body.article.article_id).toBe(1);
         expect(body.article.votes).toBe(101);
       });
   });
 
-  test("201: Responds with the updated article if the given inc_votes is negative", () => {
+  test("200: Responds with the updated article if the given inc_votes is negative", () => {
     const votesToAdd = { inc_votes: -1 };
     return request(app)
       .patch("/api/articles/1")
       .send(votesToAdd)
-      .expect(201)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.article.votes).toBe(99);
-      });
-  });
-
-  test("201: Responds with the updated article if the given inc_votes is negative", () => {
-    const votesToAdd = { inc_votes: -1 };
-
-    return request(app)
-      .patch("/api/articles/1")
-      .send(votesToAdd)
-      .expect(201)
-      .then(({ body }) => {
+        expect(body.article.article_id).toBe(1);
         expect(body.article.votes).toBe(99);
       });
   });
@@ -274,7 +264,7 @@ describe("PATCH /api/articles/:article_id", () => {
     const votesToAdd = { inc_votes: 1 };
 
     return request(app)
-      .patch("/api/articles/100")
+      .patch("/api/articles/5757")
       .send(votesToAdd)
       .expect(404)
       .then(({ body }) => {
@@ -284,14 +274,21 @@ describe("PATCH /api/articles/:article_id", () => {
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
-  test("204: Responds with no content after successful deletion", () => {
+  test("204: Responds with no content after successful deletion and checks that the comment is deleted", () => {
     return request(app)
       .delete("/api/comments/1")
       .expect(204)
       .then((res) => {
-        expect(res.text).toBe("")
+        expect(res.text).toBe("");
+        return request(app)
+          .delete("/api/comments/1")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Comment Not Found");
+          });
       });
   });
+
   test("400: Responds with a Bad Request message when the endpoint is invalid", () => {
     return request(app)
       .delete("/api/comments/chilli")
@@ -300,12 +297,32 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
+
+  test("404: Responds with a Comment Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
-      .delete("/api/comments/100")
+      .delete("/api/comments/5757")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Page Not Found");
+        expect(body.msg).toBe("Comment Not Found");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: Responds with an array of objects, each object should have username, name and avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const theUser = body.users;
+        expect(theUser.length).toBeGreaterThan(0);
+        theUser.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
       });
   });
 });

@@ -1,6 +1,6 @@
 const db = require("../../db/connection");
 
-exports.selectTopics = () => {
+exports.fetchTopics = () => {
   return db.query(`SELECT * FROM topics`).then(({ rows }) => {
     return rows;
   });
@@ -90,7 +90,7 @@ exports.removeCommById = (comment_id) => {
     .query(`SELECT * FROM comments WHERE comment_id = $1`, [comment_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Page Not Found" });
+        return Promise.reject({ status: 404, msg: "Comment Not Found" });
       }
       return db
         .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [
@@ -100,4 +100,10 @@ exports.removeCommById = (comment_id) => {
           return rows;
         });
     });
+};
+
+exports.fetchUsers = () => {
+  return db.query(`SELECT * FROM users`).then(({ rows }) => {
+    return rows;
+  });
 };

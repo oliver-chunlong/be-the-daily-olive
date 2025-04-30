@@ -1,13 +1,14 @@
 const db = require("../../db/connection");
 const endpoints = require("../../endpoints.json");
 const {
-  selectTopics,
+  fetchTopics,
   selectArticleById,
   fetchArticles,
   fetchCommsByArtId,
   insertCommByArtId,
   updateArtById,
   removeCommById,
+  fetchUsers,
 } = require("../models/get-api.model");
 
 exports.getApi = (req, res) => {
@@ -15,7 +16,7 @@ exports.getApi = (req, res) => {
 };
 
 exports.getTopics = (req, res, next) => {
-  selectTopics()
+  fetchTopics()
     .then((topics) => {
       res.status(200).send({ topics });
     })
@@ -66,7 +67,7 @@ exports.patchArtById = (req, res, next) => {
 
   updateArtById(article_id, inc_votes)
     .then((article) => {
-      return res.status(201).send({ article });
+      return res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -80,3 +81,9 @@ exports.deleteCommById = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.getUsers = (req, res, next) => {
+  fetchUsers().then((users) => {
+    return res.status(200).send({users})
+  }).catch(next)
+}
