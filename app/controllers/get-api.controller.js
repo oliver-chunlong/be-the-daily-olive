@@ -83,7 +83,6 @@ exports.deleteCommById = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-  console.log("in controller")
   fetchUsers().then((users) => {
     return res.status(200).send({users})
   }).catch(next)

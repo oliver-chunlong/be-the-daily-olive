@@ -71,7 +71,7 @@ describe("GET /api/articles/:article_id", () => {
 
   test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
-      .get("/api/articles/100")
+      .get("/api/articles/5757")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page Not Found");
@@ -136,7 +136,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 
   test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
-      .get("/api/articles/100/comments")
+      .get("/api/articles/5757/comments")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page Not Found");
@@ -264,7 +264,7 @@ describe("PATCH /api/articles/:article_id", () => {
     const votesToAdd = { inc_votes: 1 };
 
     return request(app)
-      .patch("/api/articles/100")
+      .patch("/api/articles/5757")
       .send(votesToAdd)
       .expect(404)
       .then(({ body }) => {
@@ -290,12 +290,12 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  test("404: Responds with a Page Not Found message when the endpoint is valid but out of range", () => {
+  test("404: Responds with a Comment Not Found message when the endpoint is valid but out of range", () => {
     return request(app)
-      .delete("/api/comments/100")
+      .delete("/api/comments/5757")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Page Not Found");
+        expect(body.msg).toBe("Comment Not Found");
       });
   });
 });
@@ -307,7 +307,6 @@ describe("GET /api/users", () => {
       .expect(200)
       .then(({ body }) => {
         const theUser = body.users;
-        console.log(theUser);
         expect(theUser.length).toBeGreaterThan(0);
         theUser.forEach((user) => {
           expect(user).toMatchObject({
