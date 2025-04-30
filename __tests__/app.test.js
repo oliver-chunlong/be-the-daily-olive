@@ -79,30 +79,30 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-// describe("GET /api/articles", () => {
-//   test("200: Responds with an articles array of article objects, each containing all the necessary properties except body and sorted by date in descending order", () => {
-//     return request(app)
-//       .get("/api/articles")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const allArticles = body.articles;
-//         expect(allArticles.length).toBeGreaterThan(0);
-//         expect(allArticles).toBeSorted("created_at", { descending: true });
-//         allArticles.forEach((article) => {
-//           expect(article).toMatchObject({
-//             article_id: expect.any(Number),
-//             title: expect.any(String),
-//             topic: expect.any(String),
-//             author: expect.any(String),
-//             created_at: expect.any(String),
-//             votes: expect.any(Number),
-//             article_img_url: expect.any(String),
-//             comment_count: expect.any(Number),
-//           });
-//         });
-//       });
-//   });
-// });
+describe("GET /api/articles", () => {
+  test("200: Responds with an articles array of article objects, each containing all the necessary properties except body and sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const allArticles = body.articles;
+        expect(allArticles.length).toBeGreaterThan(0);
+        expect(allArticles).toBeSorted("created_at", { descending: true });
+        allArticles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+});
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an array of comments for the given article_id with all the necessary properties, served in the order of recency", () => {
@@ -201,7 +201,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     };
 
     return request(app)
-      .post("/api/articles/100/comments")
+      .post("/api/articles/5757/comments")
       .send(newComment)
       .expect(404)
       .then(({ body }) => {
@@ -436,7 +436,7 @@ describe("GET /api/articles (sorting queries)", () => {
 
   test("400: Responds with Bad Request message if sort_by given is invalid", () => {
     return request(app)
-      .get("/api/articles?sort_by=5757&order=desc")
+      .get("/api/articles?sort_by=thyme&order=desc")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
@@ -445,7 +445,7 @@ describe("GET /api/articles (sorting queries)", () => {
 
   test("400: Responds with Bad Request message if order given is invalid", () => {
     return request(app)
-      .get("/api/articles?sort_by=article_id&order=5757")
+      .get("/api/articles?sort_by=article_id&order=rosemany")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
@@ -454,7 +454,42 @@ describe("GET /api/articles (sorting queries)", () => {
 
   test("400: Responds with Bad Request message if both sort_by and order given are invalid", () => {
     return request(app)
-      .get("/api/articles?sort_by=5757&order=5757")
+      .get("/api/articles?sort_by=vanilla&order=cinnamon")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/articles (topic query)", () => {
+  test("200: Responds with the articles filtered by the topic value specified in the query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesFilteredByTopic = body.articles;
+        expect(articlesFilteredByTopic.length).toBeGreaterThan(0);
+        articlesFilteredByTopic.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+
+  test("200: Responds with the articles filtered, sorted and ordered by all  values specified in the query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=article_id&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesFilteredSortedOrdered = body.articles;
+        expect(articlesFilteredSortedOrdered.length).toBe(12);
+        expect(articlesFilteredSortedOrdered).toBeSortedBy("article_id", { ascending: true });
+      });
+  });
+
+  test("400: Responds with the a Bad Request message if the topic value given is invalid", () => {
+    return request(app)
+      .get("/api/articles?topic=anise")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
