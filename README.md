@@ -2,15 +2,15 @@
 
 The Daily Olive is a mock news site for articles, comments, votes, and all the juicy internet opinions in between.
 
-This is a RESTful API built with **Node.js**, **Express**, and **PostgreSQL**, designed to serve as the backend for my project. It's modular, test-driven, and held together with a few drops of (happy) developer tears.
+This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**. It's developed as part of the wider NC News project for the Northcoders Software Development Bootcamp, designed to showcase the fundamentals of full-stack architecture from the server-side.
 
-_This project was built as part of the Northcoders Software Development Bootcamp to showcase the fundamentals of full-stack architecture from the server-side._
+It's modular, it's test-driven, and it's held together with a few (happy) developer tears.
 
 **🫒 Get the Scoop:** [Click Here](https://the-daily-olive.onrender.com/api)
 
 ## 🔍 What Can You Expect?
 
-The Daily Olive backend API lets you:
+This backend API lets you:
 
 - Browse and filter articles by topic, date, or vote count  
 - Get content based on your preferred topic
@@ -79,4 +79,4 @@ npm test
 
 Thanks so much for checking out The Daily Olive! Here’s wishing your code always _pit-free_ and _ripe_ for success!
 
-**📍 Explore the Deployed Version:** [Click Here](https://the-daily-olive.onrender.com/api)
+**📍 Explore the Hosted Version:** [Click Here](https://the-daily-olive.onrender.com/api)
