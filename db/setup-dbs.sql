@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS nc_news;
-CREATE DATABASE nc_news;
+DROP DATABASE IF EXISTS the_daily_olive;
+CREATE DATABASE the_daily_olive;
 
-DROP DATABASE IF EXISTS nc_news_test;
-CREATE DATABASE nc_news_test;
+DROP DATABASE IF EXISTS the_daily_olive_test;
+CREATE DATABASE the_daily_olive_test;
