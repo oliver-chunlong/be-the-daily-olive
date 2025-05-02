@@ -40,7 +40,7 @@ Before you get started, make sure you have these installed:
 
 Follow these steps to get everything up and running locally:
 
-#### 1. Fork and Clone the Repository
+#### 1. Clone the Repository
 
 #### 2. Install Dependencies
 
