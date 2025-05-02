@@ -12,7 +12,7 @@ const {
   patchArticleById,
   deleteCommentById,
   getUsers,
-} = require("./app/controllers/get-api.controller");
+} = require("./app/controllers/the-daily-olive.controller");
 
 app.use(express.json());
 

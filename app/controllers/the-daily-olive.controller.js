@@ -9,7 +9,7 @@ const {
   updateArticleById,
   removeCommentById,
   fetchUsers,
-} = require("../models/get-api.model");
+} = require("../models/the-daily-olive.model");
 
 exports.getApi = (req, res) => {
   res.status(200).send({ endpoints });
