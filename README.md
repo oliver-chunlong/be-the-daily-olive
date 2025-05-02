@@ -2,7 +2,7 @@
 
 The Daily Olive is a mock news site for articles, comments, votes, and all the juicy internet opinions you want to sink your teeth into.
 
-This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**. It was developed for the Northcoders Software Development Bootcamp backend project, designed to showcase the fundamentals of full-stack architecture from the server side.
+This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**, and tested with **Jest** and **Supertest**. It was developed for the Northcoders Software Development Bootcamp backend project, designed to showcase the fundamentals of full-stack architecture from the server side.
 
 It's modular, it's test-driven, and it's held together with a few (happy) developer tears.
 
