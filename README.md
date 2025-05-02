@@ -2,7 +2,7 @@
 
 The Daily Olive is a mock news site for articles, comments, votes, and all the juicy internet opinions in between.
 
-This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**. It's developed as part of the wider NC News project for the Northcoders Software Development Bootcamp, designed to showcase the fundamentals of full-stack architecture from the server-side.
+This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**. It was developed as part of the NC News backend project for the Northcoders Software Development Bootcamp, designed to showcase the fundamentals of full-stack architecture from the server side.
 
 It's modular, it's test-driven, and it's held together with a few (happy) developer tears.
 
@@ -40,12 +40,7 @@ Make sure you have these installed:
 
 Follow these steps to get everything up and running locally:
 
-#### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/nc-news-backend.git
-cd nc-news-backend
-```
+#### 1. Fork and Clone the Repository
 
 #### 2. Install Dependencies
 
