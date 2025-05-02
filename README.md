@@ -1,8 +1,8 @@
-# 📰 The Daily Olive: A Backend API for NC News
+# 📰 The Daily Olive: A Northcoders Backend API Project
 
-The Daily Olive is a mock news site for articles, comments, votes, and all the juicy internet opinions in between.
+The Daily Olive is a mock news site for articles, comments, votes, and all the juicy internet opinions you want to sink your teeth into.
 
-This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**. It was developed as part of the NC News backend project for the Northcoders Software Development Bootcamp, designed to showcase the fundamentals of full-stack architecture from the server side.
+This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**. It was developed for the Northcoders Software Development Bootcamp backend project, designed to showcase the fundamentals of full-stack architecture from the server side.
 
 It's modular, it's test-driven, and it's held together with a few (happy) developer tears.
 
@@ -10,7 +10,7 @@ It's modular, it's test-driven, and it's held together with a few (happy) develo
 
 ## 🔍 What Can You Expect?
 
-This backend API lets you:
+The Daily Olive backend API lets you:
 
 - Browse and filter articles by topic, date, or vote count  
 - Get content based on your preferred topic
@@ -31,7 +31,7 @@ This backend API lets you:
 
 ## 📌 Requirements
 
-Make sure you have these installed:
+Before you get started, make sure you have these installed:
 
 - **Node.js** `v18+`
 - **PostgreSQL** `v12+`
@@ -53,15 +53,15 @@ npm install
 Create two .env files for your databases:
 
 ```bash
-.env.test (for the test database) and add PGDATABASE=nc_news_test inside the file
-.env.development (for the development database) and add PGDATABASE=nc_news inside the file
+.env.test and add PGDATABASE=the_daily_olive_test inside the file
+.env.development and add PGDATABASE=the_daily_olive inside the file
 ```
 
 #### 4. Create and Seed Your Local Databases
 
 ```bash
 npm run setup-dbs
-npm run seed
+npm run seed-dev
 ```
 
 #### ✅ To Run Tests
@@ -70,7 +70,7 @@ npm run seed
 npm test
 ```
 
-## 🎉 And You're Good to Go!
+## 🎉 Now Dig Right In!
 
 Thanks so much for checking out The Daily Olive! Here’s wishing your code always _pit-free_ and _ripe_ for success!
 
