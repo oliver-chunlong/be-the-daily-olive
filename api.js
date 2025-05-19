@@ -13,6 +13,9 @@ const {
   deleteCommentById,
   getUsers,
 } = require("./app/controllers/the-daily-olive.controller");
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
