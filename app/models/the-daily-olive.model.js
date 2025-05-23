@@ -18,7 +18,6 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.fetchArticles = async (sort_by, order, topic) => {
-  // Fetch all valid topic slugs from the DB
   const topicRows = await db.query("SELECT slug FROM topics");
   const validTopics = topicRows.rows.map(row => row.slug);
 
@@ -32,7 +31,6 @@ exports.fetchArticles = async (sort_by, order, topic) => {
 
   const queryParams = [];
 
-  // Validate topic and add WHERE clause if present
   if (topic) {
     if (!validTopics.includes(topic)) {
       return Promise.reject({ status: 400, msg: "Bad Request" });
