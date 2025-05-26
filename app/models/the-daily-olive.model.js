@@ -17,27 +17,23 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.fetchArticles = async (sort_by, order, topic) => {
-  const topicRows = await db.query("SELECT slug FROM topics");
-  const validTopics = topicRows.rows.map(row => row.slug);
+exports.fetchArticles = (sort_by, order, topic) => {
+  let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
-  let queryStr = `
-    SELECT articles.article_id, articles.title, articles.topic, articles.author, 
-           articles.created_at, articles.votes, articles.article_img_url, 
-           COUNT(comments.comment_id)::INT AS comment_count 
-    FROM articles 
-    LEFT JOIN comments ON articles.article_id = comments.article_id
-  `;
+  const validTopics = [
+    "mitch",
+    "cats",
+    "paper",
+    "coding",
+    "football",
+    "cooking",
+  ];
 
-  const queryParams = [];
-
-  if (topic) {
-    if (!validTopics.includes(topic)) {
-      return Promise.reject({ status: 400, msg: "Bad Request" });
-    }
-    queryStr += ` WHERE topic = $1 GROUP BY articles.article_id`;
-    queryParams.push(topic);
-  } else {
+  if (topic && validTopics.includes(topic)) {
+    queryStr += ` WHERE topic = '${topic}' GROUP BY articles.article_id`;
+  } else if (topic && !validTopics.includes(topic)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  } else if (!topic) {
     queryStr += ` GROUP BY articles.article_id`;
   }
 
@@ -69,8 +65,9 @@ exports.fetchArticles = async (sort_by, order, topic) => {
     queryStr += ` DESC`;
   }
 
-  const result = await db.query(queryStr, queryParams);
-  return result.rows;
+  return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.fetchCommentsByArticleId = (article_id) => {
@@ -120,9 +117,9 @@ exports.updateArticleById = (article_id, inc_votes) => {
       return db
         .query(
           `UPDATE articles
-           SET votes = votes + $1
-           WHERE article_id = $2
-           RETURNING *`,
+       SET votes = votes + $1
+       WHERE article_id = $2
+       RETURNING *`,
           [inc_votes, article_id]
         )
         .then(({ rows }) => {
