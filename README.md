@@ -6,17 +6,16 @@ This is a RESTful API built using **Node.js**, **Express**, and **PostgreSQL**, 
 
 It's modular, it's test-driven, and it's held together with a few (happy) developer tears.
 
-**🫒 Get the Scoop:** [Click Here](https://the-daily-olive.onrender.com/api)
+**🫒 Serve(r) It Up:** [Click Here](https://the-daily-olive.onrender.com/api)
 
 ## 🔍 What Can You Expect?
 
 The Daily Olive backend API lets you:
 
-- Browse and filter articles by topic, date, or vote count  
-- Get content based on your preferred topic
+- Browse articles based on your preferred topic
+- Sort content by date, votes and comment count  
+- Upvote articles
 - Add or delete comments
-- Upvote or downvote articles and comments  
-- Look up users and their contributions  
 
 ## 🛠 The Tech Stack
 
