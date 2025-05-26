@@ -69,6 +69,10 @@ npm run seed-dev
 npm test
 ```
 
+## 🍽️ Feast Your Eyes
+
+On the frontend of The Daily Olive [here](https://the-daily-olive.netlify.app).
+
 ## 🎉 Now Dig Right In!
 
 Thanks so much for checking out The Daily Olive! Here’s wishing your code always _pit-free_ and _ripe_ for success!
